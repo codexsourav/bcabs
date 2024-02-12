@@ -147,10 +147,10 @@ export function TripTypeBox({ className, onChange, trip }: ITripBox) {
 }
 
 
-export function InputBox({ type = "text", className, onChange, placeholder, value }: { type?: string, placeholder?: string, value: string | number | readonly string[] | undefined, onChange: (e: string) => void, className?: string }) {
+export function InputBox({ readOnly = false, type = "text", className, onChange, placeholder, value }: { type?: string, placeholder?: string, value: string | number | readonly string[] | undefined, readOnly?: boolean, onChange: (e: string) => void, className?: string }) {
 
     return <div className="relative w-full">
-        <input type={type} onChange={(e) => onChange(e.target.value)} value={value} placeholder={placeholder} className={"border outline-none px-3 py-2 w-full h-[42px] focus:border-orange-300 transition-all " + className} />
+        <input readOnly={readOnly} type={type} onChange={(e) => onChange(e.target.value)} value={value} placeholder={placeholder} className={"border outline-none px-3 py-2 w-full h-[42px] focus:border-orange-300 transition-all " + className} />
         {
             value ? <div onClick={() => {
                 onChange("")

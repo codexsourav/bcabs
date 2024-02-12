@@ -32,6 +32,8 @@ export interface IRoundTripCab extends ICabCommon {
     pricePerKm: number;
     driverCost: number;
     price?: number;
+    highPrice?: number;
+    distance?: number
 }
 
 export interface ILocalCab extends ICabCommon {
@@ -40,11 +42,13 @@ export interface ILocalCab extends ICabCommon {
         kr8: number;
         hr12: number;
         hr24: number;
-    }
+    },
 }
 
 export interface IAirportCab extends ICabCommon {
     pricePerKm: number;
     baseAmount: number;
     price?: number;
+    highPrice?: number;
+    distance?: number
 }

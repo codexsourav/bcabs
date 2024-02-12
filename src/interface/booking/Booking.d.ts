@@ -4,8 +4,8 @@ export interface booking {
     _id?: string;
     _date?: string;
     _v?: string;
-    trip?: "oneway" | "local" | "roundtrip" | "airport";
-    status?: "pending" | "confirmed" | "complete" | "current" | "cancel";
+    trip: "oneway" | "local" | "roundtrip" | "airport";
+    status: "pending" | "confirmed" | "complete" | "current" | "cancel";
     cabId: string;
     delete?: boolean;
     name: string;
@@ -14,7 +14,7 @@ export interface booking {
     haveGst: boolean;
     distance: number;
     CreateByAdmin?: boolean;
-    gstInfo?: {
+    gstInfo: {
         companyName: string;
         gstNumber: string;
     };
@@ -28,6 +28,7 @@ export interface booking {
         payPercent: 0 | 25 | 50 | 100;
         payAmount: number;
         pendingAmount: number;
+        total: number;
     }
 }
 
@@ -66,6 +67,7 @@ export interface IRoundTripBooking extends booking {
 
 export interface ILocalBooking extends booking {
     cabInfo: ILocalCab;
+    tripDuration: number;
     tripInfo: {
         from: string;
         pickUpdate: string;
@@ -82,6 +84,7 @@ export interface IAirportBooking extends booking {
     cabInfo: IAirportCab;
     tripInfo: {
         type: 0 | 1;
+        trip: string,
         airport: string;
         location: string;
         pickUpdate: string;
@@ -89,7 +92,8 @@ export interface IAirportBooking extends booking {
         distance: number;
     },
     pickupInfo: {
-        pickupAddress: string;
-        dropAddress: string;
+        airport: string;
+        address: string;
+        landmark: string,
     },
 }

@@ -3,7 +3,7 @@ import { AppDispatch, RootState } from "../../../../../store/stote";
 import { INewAirportCab, setNewAirportCabData } from "../../../../../store/provider/addCabs/AddAirportCabProvider";
 import { toast } from "react-toastify";
 import { Label } from "../../../../../components/Cabs/CabBox";
-import { InputBox, InputFileBox, InputSelectBox } from "../../../../../components/Inputbox/GoogleInputBoc";
+import { InputBox, InputSelectBox } from "../../../../../components/Inputbox/GoogleInputBoc";
 import Button from "../../../../../components/Inputbox/Button";
 import { PickImageFile } from "../../../../../components/picker/ImagePicker";
 

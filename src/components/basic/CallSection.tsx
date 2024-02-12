@@ -1,7 +1,6 @@
 import { ContainerWrapper } from "../wrapper/Wrappers"
 import { MdOutlineSupportAgent } from "react-icons/md";
 import { FaArrowRightLong } from "react-icons/fa6";
-import { Link } from "react-router-dom";
 import { scrollToElement } from "../../utils/helper";
 
 

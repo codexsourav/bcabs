@@ -1,11 +1,14 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Label } from "../../components/Cabs/CabBox";
 import Button from "../../components/Inputbox/Button";
 import { InputBox, PassInputBox } from "../../components/Inputbox/GoogleInputBoc";
 import { UserWrapper } from "../../components/wrapper/UserWrapper";
 import { ContainerWrapper } from "../../components/wrapper/Wrappers";
 import { toast } from "react-toastify";
+import { apiRequest, withErrorHandling } from "../../helper/apiRequest";
+import { StorageKEY, storeLocalStorageData } from "../../helper/storageKeys";
+import { validateEmail } from "../../utils/helper";
 
 interface SignupState {
     fullName: string;
@@ -16,6 +19,10 @@ interface SignupState {
 }
 
 function Signup() {
+    const queryString = window.location.search;
+    const query = new URLSearchParams(window.location.search);
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     const [signupState, setSignupState] = useState<SignupState>({
         fullName: "",
         email: "",
@@ -43,12 +50,13 @@ function Signup() {
             errors.push('Full Name is required');
         }
 
-        if (!email) {
-            errors.push('Email is required');
+        if (!email || !validateEmail(email)) {
+            errors.push('Invalid Email Id');
         }
 
-        if (!mobileNumber) {
-            errors.push('Mobile Number is required');
+
+        if (!mobileNumber || mobileNumber.length < 10) {
+            errors.push('Invalid Mobile Number');
         }
 
         if (!password) {
@@ -75,13 +83,38 @@ function Signup() {
         return true;
     };
 
+    const getNavigate = () => {
+        const path = query.get("type");
+        if (path) {
+            return `/booking/${path}${queryString}`
+        } else {
+            return "/"
+        }
+    }
+
+
+    const sendRequest = async () => {
+        setLoading(true)
+        const res = await apiRequest<any>({ path: "/api/auth/signup", 'method': "POST", data: signupState })
+        toast.success(res.data.message);
+        if (res.data.token) {
+            storeLocalStorageData(StorageKEY.user, res.data.token);
+            navigate(getNavigate(),
+            );
+        }
+        setLoading(false)
+    };
+    const onError = () => {
+        setLoading(false)
+    }
+    const request = withErrorHandling(sendRequest, onError)
 
     const handleSignup = () => {
-        validateSignup();
-        // Add your signup logic here using signupState values
-        console.log("Signup State:", signupState);
+        if (validateSignup() == true) {
+            request();
+        }
     };
-    console.log(signupState);
+
     return (
         <UserWrapper>
             <ContainerWrapper>
@@ -115,6 +148,7 @@ function Signup() {
                         <div className="mt-6">
                             <Label>Mobile Number</Label>
                             <InputBox
+                                type="number"
                                 value={signupState.mobileNumber}
                                 onChange={(e) => handleInputChange(e, "mobileNumber")}
                             />
@@ -136,12 +170,12 @@ function Signup() {
                             />
                         </div>
                         <div className="mt-6 md:mt-5 w-full">
-                            <Button className="w-full md:w-auto" onClick={handleSignup}>
-                                SignUp Now
+                            <Button disabled={loading} className="w-full md:w-auto" onClick={handleSignup}>
+                                {loading ? "Creating.." : "SignUp Now"}
                             </Button>
                         </div>
                         <Link
-                            to="/login"
+                            to={"/login" + queryString}
                             className="mt-24 block text-center text-sm text-orange-600 font-bold"
                         >
                             Back to Login

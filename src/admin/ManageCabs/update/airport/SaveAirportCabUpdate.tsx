@@ -3,7 +3,7 @@ import Button from "../../../../components/Inputbox/Button"
 import { RootState } from "../../../../store/stote";
 import { useState } from "react";
 import { apiRequest, withErrorHandling } from "../../../../helper/apiRequest";
-import { resetAirportCabData, setNewAirportCabData } from "../../../../store/provider/addCabs/AddAirportCabProvider";
+import { setNewAirportCabData } from "../../../../store/provider/addCabs/AddAirportCabProvider";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 

@@ -21,6 +21,7 @@ import UpdateOneWayCab from "../admin/ManageCabs/update/oneWay/UpdateOneWayCab"
 import UpdateLocalCab from "../admin/ManageCabs/update/local/UpdateLocalCab"
 import UpdateRoundTripCab from "../admin/ManageCabs/update/roundTrip/UpdateRoundTripCab"
 import UpdateAirportCab from "../admin/ManageCabs/update/airport/UpdateAirportCab"
+import UpdateBlog from "../admin/blogs/update/UpdateBlog"
 
 export const adminRoutePath = "/admin"
 function AdminRoutes() {
@@ -52,7 +53,7 @@ function AdminRoutes() {
 
             <Route path={adminRoutePath + "/blogs"} Component={ShowBlogs} />
             <Route path={adminRoutePath + "/blogs/add"} Component={AddNewBlog} />
-
+            <Route path={adminRoutePath + "/blogs/update/:id"} Component={UpdateBlog} />
 
             <Route path={adminRoutePath + "/users"} Component={UsersAdmin} />
             <Route path={adminRoutePath + "/setting"} Component={SettingAdmin} />

@@ -7,26 +7,46 @@ import { UserWrapper } from "../../components/wrapper/UserWrapper";
 import { ContainerWrapper } from "../../components/wrapper/Wrappers";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { apiRequest, withErrorHandling } from "../../helper/apiRequest";
+import { validateEmail } from "../../utils/helper";
 
 function ForgetPassword() {
+    const [loading, setLoading] = useState(false)
     const [email, setEmail] = useState("");
 
     const handleInputChange = (e: string) => {
         setEmail(e);
     };
 
-    const validateEmail = () => {
+    const validateEmailId = () => {
         if (!email) {
             toast.error('Please enter your Email ID');
+            return false;
+        } else if (!validateEmail(email)) {
+            toast.error('Invalid Email ID');
             return false;
         }
         return true;
     };
 
+
+
+    const sendRequest = async () => {
+        setLoading(true)
+        const res = await apiRequest<any>({ path: "/api/auth/forgetpass/" + email, 'method': "POST" })
+        toast.success(res.data.message);
+        setLoading(false);
+        setEmail("");
+    };
+    const onError = () => {
+        setLoading(false)
+    }
+    const request = withErrorHandling(sendRequest, onError)
+
+
     const handleResetPassword = () => {
-        if (validateEmail()) {
-            console.log("Email for password reset:", email);
-            toast.success('Reset password link sent successfully!');
+        if (validateEmailId()) {
+            request();
         }
     };
 
@@ -57,8 +77,8 @@ function ForgetPassword() {
                             />
                         </div>
                         <div className="mt-8 md:mt-5 w-full">
-                            <Button className="w-full md:w-auto" onClick={handleResetPassword}>
-                                Send Reset Password Link
+                            <Button disabled={loading} className="w-full md:w-auto" onClick={handleResetPassword}>
+                                {loading ? "Sending Mail..." : "Send Reset Password Link"}
                             </Button>
                         </div>
                         <Link

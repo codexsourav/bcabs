@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../../../store/stote";
 import { Label } from "../../../../../components/Cabs/CabBox";
 import { InputBox } from "../../../../../components/Inputbox/GoogleInputBoc";
-import SaveLocalData from "../SaveLocalData";
 import Button from "../../../../../components/Inputbox/Button";
 import { INewLocalCab, setLocalPricing, setNewLocalCabData } from "../../../../../store/provider/addCabs/AddLocalCabProvider";
 

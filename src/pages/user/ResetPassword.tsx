@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Label } from "../../components/Cabs/CabBox";
 import Button from "../../components/Inputbox/Button";
 
@@ -8,6 +8,8 @@ import { ContainerWrapper } from "../../components/wrapper/Wrappers";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { PassInputBox } from "../../components/Inputbox/GoogleInputBoc";
+import { apiRequest, withErrorHandling } from "../../helper/apiRequest";
+import { clearLocalStorageData } from "../../helper/storageKeys";
 
 interface ResetPasswordState {
     newPassword: string;
@@ -15,6 +17,9 @@ interface ResetPasswordState {
 }
 
 function ResetPassword() {
+    const [loading, setLoading] = useState(false)
+    const { id } = useParams();
+    const navigate = useNavigate();
     const [resetPasswordState, setResetPasswordState] = useState<ResetPasswordState>({
         newPassword: "",
         confirmNewPassword: "",
@@ -31,10 +36,12 @@ function ResetPassword() {
     };
 
     const validateResetPassword = () => {
+
+
         const { newPassword, confirmNewPassword } = resetPasswordState;
 
         if (!newPassword || !confirmNewPassword) {
-            toast.error('Please New & Confirm Password');
+            toast.error('Please Enter New & Confirm Password');
             return false;
         }
 
@@ -46,11 +53,26 @@ function ResetPassword() {
         return true;
     };
 
+    const sendRequest = async () => {
+        setLoading(true)
+        const res = await apiRequest<any>({ path: "/api/auth/resetpass/" + id, 'method': "POST", data: { password: resetPasswordState.newPassword } })
+        toast.success(res.data.message);
+        setLoading(false);
+        setResetPasswordState({
+            newPassword: "",
+            confirmNewPassword: "",
+        })
+        clearLocalStorageData();
+        navigate("/login", { replace: true });
+    };
+    const onError = () => {
+        setLoading(false)
+    }
+    const request = withErrorHandling(sendRequest, onError)
+
     const handleResetPassword = () => {
         if (validateResetPassword()) {
-            // Proceed with reset password logic
-            console.log("Reset Password State:", resetPasswordState);
-            toast.success('Password reset successful!');
+            request();
         }
     };
 
@@ -88,8 +110,8 @@ function ResetPassword() {
                             />
                         </div>
                         <div className="mt-8 md:mt-5 w-full">
-                            <Button className="w-full md:w-auto" onClick={handleResetPassword}>
-                                Reset Password
+                            <Button disabled={loading} className="w-full md:w-auto" onClick={handleResetPassword}>
+                                {loading ? "Loading..." : "Reset Password"}
                             </Button>
                         </div>
                         <Link

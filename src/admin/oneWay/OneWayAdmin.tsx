@@ -12,15 +12,17 @@ function OneWayAdmin() {
             <AdminNavbar />
             <AdminTabWrapper>
                 <div className="grid grid-cols-5 gap-2 mb-2">
-                    <InputBox placeholder="Find Booking ID" />
-                    <InputBox placeholder="Search By Pickup Address" />
-                    <InputSelectBox value="">
+                    <InputBox onChange={(e) => console.log(e)
+                    } value={""} placeholder="Find Booking ID" />
+                    <InputBox onChange={(e) => console.log(e)
+                    } value={""} placeholder="Search By Pickup Address" />
+                    <InputSelectBox onChange={(e) => console.log(e)} value="">
                         <option value="" disabled  >Car Type</option>
                     </InputSelectBox>
-                    <InputSelectBox value="">
+                    <InputSelectBox onChange={(e) => console.log(e)} value="">
                         <option value="" disabled  >Distance</option>
                     </InputSelectBox>
-                    <InputSelectBox value="">
+                    <InputSelectBox onChange={(e) => console.log(e)} value="">
                         <option value="" disabled  >Status</option>
                         <option value="0" disabled  >0%</option>
                         <option value="25" disabled  >25%</option>

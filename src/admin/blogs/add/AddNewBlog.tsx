@@ -1,33 +1,47 @@
 import { useState } from 'react';
 import { Label } from '../../../components/Cabs/CabBox';
-import { InputBox, InputFileBox } from '../../../components/Inputbox/GoogleInputBoc';
+import { InputBox } from '../../../components/Inputbox/GoogleInputBoc';
 import Button from '../../../components/Inputbox/Button';
 import AdminNavbar from '../../../components/admin/AdminNavbar';
 import AdminTabWrapper from '../../../components/admin/AdminTabWrapper';
 import { Editor } from '../../../components/Inputbox/Editor';
+import { PickImageFile } from '../../../components/picker/ImagePicker';
+import { apiRequest, withErrorHandling } from '../../../helper/apiRequest';
+import { toast } from 'react-toastify';
 
 function AddNewBlog() {
+    const [loading, setLoading] = useState(false);
     // State management for inputs
     const [blogTitle, setBlogTitle] = useState('');
     const [blogDescription, setBlogDescription] = useState('');
     const [blogKeywords, setBlogKeywords] = useState('');
-    const [blogImage, setBlogImage] = useState(null);
+    const [blogImage, setBlogImage] = useState("");
     const [blog, setBlog] = useState("")
 
-    // Handler for updating blog image
-    const handleImageChange = (e: any) => {
-        setBlogImage(e.target.files[0]); // Assuming only one file will be selected
+    const resetState = () => {
+        setLoading(false);
+        setBlogTitle('');
+        setBlogDescription('');
+        setBlogKeywords('');
+        setBlogImage('');
+        setBlog('');
     };
 
-    // Handler for saving the blog
-    const handleSaveBlog = () => {
-        // You can use the state variables here to save the blog
-        console.log("Blog Title:", blogTitle);
-        console.log("Blog Description:", blogDescription);
-        console.log("Blog Keywords:", blogKeywords);
-        console.log("Blog Image:", blogImage);
-        // Add logic to save the blog
+    const sendRequest = async () => {
+        setLoading(true)
+        const res = await apiRequest<any>({
+            path: "/api/admin/blog", 'method': "POST", data: {
+                title: blogTitle, description: blogDescription, keywords: blogDescription, image: blogImage, content: blog
+            },
+            isAdmin: true
+        })
+        toast.success(res.data.message);
+        resetState();
     };
+    const onError = () => {
+        setLoading(false)
+    }
+    const handleSaveBlog = withErrorHandling(sendRequest, onError)
 
     return (
         <>
@@ -39,7 +53,8 @@ function AddNewBlog() {
                     <div className="grid grid-cols-2 gap-5">
                         <div className="">
                             <Label>Blog Image</Label>
-                            <InputFileBox onChange={handleImageChange} />
+                            {/* <InputFileBox onChange={handleImageChange} /> */}
+                            <PickImageFile onChange={(e) => setBlogImage(e)} value={blogImage} />
                         </div>
                         <div className="">
                             <Label>Blog Title</Label>
@@ -56,7 +71,7 @@ function AddNewBlog() {
                     </div>
                     <Editor value={blog} onChenge={(e) => setBlog(e)} />
                 </div>
-                <Button className="mt-5 mb-8" onClick={handleSaveBlog}> Save Blog </Button>
+                <Button disabled={loading} className="mt-5 mb-8" onClick={handleSaveBlog}> {loading ? "Saving..." : "Save Blog"} </Button>
             </AdminTabWrapper>
 
         </>

@@ -3,7 +3,7 @@ import { AppDispatch, RootState } from "../../../../../store/stote";
 import { INewRoundTripCab, setNewRoundTripCabData } from "../../../../../store/provider/addCabs/AddRoundTripCabProvider";
 import { toast } from "react-toastify";
 import { Label } from "../../../../../components/Cabs/CabBox";
-import { InputBox, InputFileBox, InputSelectBox } from "../../../../../components/Inputbox/GoogleInputBoc";
+import { InputBox, InputSelectBox } from "../../../../../components/Inputbox/GoogleInputBoc";
 import Button from "../../../../../components/Inputbox/Button";
 import { PickImageFile } from "../../../../../components/picker/ImagePicker";
 
@@ -52,6 +52,10 @@ function AddRoundTripStep1() {
                 <div className="">
                     <Label>Max Passengers</Label>
                     <InputBox value={data.maxPassengers} onChange={(e) => { setData("maxPassengers", e) }} />
+                </div>
+                <div className="">
+                    <Label>Price / KM</Label>
+                    <InputBox value={data.pricePerKm} onChange={(e) => { setData("pricePerKm", +e) }} />
                 </div>
                 <div className="">
                     <Label>Discount %</Label>

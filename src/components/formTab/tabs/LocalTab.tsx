@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { addressOptions, cityOptions } from "../../../utils/mapOptons"
+import { addressOptions } from "../../../utils/mapOptons"
 import AutoComplete, { DatePickMe, TimePicker } from "../../Inputbox/GoogleInputBoc"
 import { AppDispatch, RootState } from "../../../store/stote";
 import { ILocalProvider, setLocalData } from "../../../store/provider/trips/LocalProvider";

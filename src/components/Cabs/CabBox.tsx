@@ -4,7 +4,7 @@ import { MyComponentProps } from "../wrapper/UserWrapper";
 import TripTab from "../formTab/TripTab";
 import { AiOutlineClose } from "react-icons/ai";
 import ExploreButton from "../formTab/ExploreButton";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 interface ICabBox {
     cabInfo: ReactNode;
     inclusions: ReactNode;
@@ -15,11 +15,11 @@ interface ICabBox {
 }
 const CabBox: React.FC<ICabBox> = ({ exclusions, facilities, inclusions, taq, cabInfo, className }) => {
     const [tabIndex, setIndex] = useState(0);
-    const classTab = "w-full h-full uppercase  border-orange-200 select-none cursor-pointer flex justify-center items-center text-[10px] font-bold";
+    const classTab = "w-full h-full uppercase  border-orange-200 select-none cursor-pointer flex justify-center items-center md:text-[10px] text-[8px] font-bold";
     return (
         <div className={" border-2 border-orange-100 hover:shadow-lg transition-all  rounded-xl overflow-hidden " + className}>
-            {[cabInfo, inclusions, exclusions, facilities, taq][tabIndex]}
-            <div className="border-t-2 border-orange-100">
+
+            <div className="">
                 <div className="p-4">
                     <div className="grid grid-cols-5 overflow-hidden w-full h-8 bg-white rounded-lg border border-orange-200">
                         <div onClick={() => setIndex(0)} className={`${classTab}  ${tabIndex == 0 ? "bg-orange-600 text-white" : "text-orange-900"}`}>CAB INFO</div>
@@ -30,6 +30,7 @@ const CabBox: React.FC<ICabBox> = ({ exclusions, facilities, inclusions, taq, ca
                     </div>
                 </div>
             </div>
+            {[cabInfo, inclusions, exclusions, facilities, taq][tabIndex]}
         </div>
     )
 }
@@ -57,7 +58,7 @@ export function CabInfo({ maxPassenger, bookLink, carImage, discount, mainPrice,
                 <p className="font-semibold text-gray-700">Max Passengers {maxPassenger}</p>
             </div>
             <div className="w-full mt-8">
-                <a href={bookLink} className="p-[11px] w-full  font-bold text-orange-500 rounded-xl justify-center items-center flex text-bold bg-orange-100 hover:bg-orange-600 hover:text-white transition-all">BOOK YOUR RIDE</a>
+                <Link to={bookLink} className="p-[11px] w-full  font-bold text-orange-500 rounded-xl justify-center items-center flex text-bold bg-orange-100 hover:bg-orange-600 hover:text-white transition-all">BOOK YOUR RIDE</Link>
             </div>
         </div>
     )
@@ -65,7 +66,7 @@ export function CabInfo({ maxPassenger, bookLink, carImage, discount, mainPrice,
 
 export const CabServiceWrapper: React.FC<MyComponentProps> = ({ children, className }) => {
     return (
-        <div className={"grid grid-cols-3 p-4 gap-x-4 gap-y-2 " + className}>
+        <div className={"grid grid-cols-3 p-4 gap-x-4 gap-y-2 min-h-64 " + className}>
             {children}
         </div>
     )
@@ -83,7 +84,7 @@ export function CabService({ icon, title }: { icon: ReactNode, title: string }) 
 
 export const FAQWrapper: React.FC<MyComponentProps> = ({ children, className }) => {
     return (
-        <div className={"flex flex-col gap-3 min-h-52" + className}>
+        <div className={"flex flex-col gap-3 min-h-52 pb-5 pt-2 px-8 text-sm" + className}>
             {children}
         </div>
     )
@@ -145,3 +146,16 @@ export const Label: React.FC<MyComponentProps> = ({ children, className }) => {
 }
 
 
+
+export function LocalTab({ setTabindex, tabIndex }: { tabIndex: number, setTabindex: ((e: number) => void) }) {
+    const classTab = "w-full h-full uppercase  border-orange-200 select-none cursor-pointer flex justify-center items-center text-[12px] font-bold";
+
+    return (
+        <div className="grid grid-cols-4 overflow-hidden w-full h-8 bg-white rounded-lg border border-orange-200">
+            <div onClick={() => setTabindex(0)} className={`${classTab}  ${tabIndex == 0 ? "bg-orange-600 text-white" : "text-orange-900"}`}>4 Hr</div>
+            <div onClick={() => setTabindex(1)} className={`border-l ${classTab} ${tabIndex == 1 ? "bg-orange-600 text-white" : "hover:bg-orange-100 text-orange-900"}`}>8 Hr</div>
+            <div onClick={() => setTabindex(2)} className={`border-l ${classTab} ${tabIndex == 2 ? "bg-orange-600 text-white" : "hover:bg-orange-100 text-orange-900"}`}>12 Hr</div>
+            <div onClick={() => setTabindex(3)} className={`border-l ${classTab} ${tabIndex == 3 ? "bg-orange-600 text-white" : "hover:bg-orange-100 text-orange-900"}`}>24 Hr</div>
+        </div>
+    )
+}

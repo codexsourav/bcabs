@@ -9,7 +9,7 @@ import Feature from "../../components/basic/Feature"
 import Header from "../../components/basic/Header"
 import Services from "../../components/basic/Services"
 import { UserWrapper } from "../../components/wrapper/UserWrapper"
-import { PickImageFile } from "../../components/picker/ImagePicker"
+
 
 
 function Home() {

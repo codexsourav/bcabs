@@ -1,7 +1,5 @@
 import { ContainerWrapper } from "../wrapper/Wrappers";
 import { useEffect, useRef, useState } from "react";
-import { FaCar } from "react-icons/fa";
-
 import TripTab from "../formTab/TripTab";
 import ExploreButton from "../formTab/ExploreButton";
 
@@ -31,7 +29,6 @@ function Header() {
             }
         };
     }, [divRef.current]);
-    console.log(divHeight);
 
     return (
 

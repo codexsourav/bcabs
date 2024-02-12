@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Label } from "../../components/Cabs/CabBox";
 import Button from "../../components/Inputbox/Button";
 import { InputBox, PassInputBox } from "../../components/Inputbox/GoogleInputBoc";
@@ -7,6 +7,8 @@ import { UserWrapper } from "../../components/wrapper/UserWrapper";
 import { ContainerWrapper } from "../../components/wrapper/Wrappers";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { apiRequest, withErrorHandling } from "../../helper/apiRequest";
+import { StorageKEY, storeLocalStorageData } from "../../helper/storageKeys";
 
 interface LoginState {
     emailOrMobile: string;
@@ -14,6 +16,10 @@ interface LoginState {
 }
 
 function Login() {
+    const queryString = window.location.search;
+    const query = new URLSearchParams(window.location.search);
+    const navigate = useNavigate()
+    const [loading, setLoading] = useState(false)
     const [loginState, setLoginState] = useState<LoginState>({
         emailOrMobile: "",
         password: "",
@@ -29,25 +35,45 @@ function Login() {
         });
     };
 
+    const getNavigate = () => {
+        const path = query.get("type");
+        if (path) {
+            return `/booking/${path}${queryString}`
+        } else {
+            return "/"
+        }
+    }
+
+    const sendRequest = async () => {
+        const { emailOrMobile, password } = loginState;
+        setLoading(true)
+        const res = await apiRequest<any>({ path: "/api/auth/login", 'method': "POST", data: { identifier: emailOrMobile, password: password } })
+        toast.success(res.data.message);
+        if (res.data.token) {
+            storeLocalStorageData(StorageKEY.user, res.data.token);
+            navigate(getNavigate(), { replace: true });
+        }
+        setLoading(false)
+    };
+    const onError = () => {
+        setLoading(false)
+    }
+    const request = withErrorHandling(sendRequest, onError)
+
     const validateLogin = () => {
         const { emailOrMobile, password } = loginState;
-
         if (!emailOrMobile || !password) {
             toast.error('Please Enter Email Or Password');
             return false;
         }
-
-
         return true;
     };
-
     const handleLogin = () => {
         if (validateLogin()) {
-            // Proceed with login logic
-            console.log("Login State:", loginState);
-            toast.success('Login successful!');
+            request();
         }
     };
+
 
     return (
         <UserWrapper>
@@ -88,12 +114,12 @@ function Login() {
                             Forget Password?
                         </Link>
                         <div className="mt-8 md:mt-5 w-full">
-                            <Button className="w-full md:w-auto" onClick={handleLogin}>
-                                Login Now
+                            <Button disabled={loading} className="w-full md:w-auto" onClick={handleLogin}>
+                                {loading ? "Checking..." : "Login Now"}
                             </Button>
                         </div>
                         <Link
-                            to="/signup"
+                            to={"/signup" + queryString}
                             className="mt-24 block text-center text-sm text-orange-600 font-bold"
                         >
                             Create New Account

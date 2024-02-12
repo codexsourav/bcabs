@@ -24,15 +24,15 @@ function OneWayConfirm() {
                     <div className=" grid grid-cols-2 gap-5 mt-10">
                         <div className="">
                             <Label>Driver Name</Label>
-                            <InputBox onChange={(e) => { }} value={"fgf"} placeholder="Enter name" />
+                            <InputBox onChange={() => { }} value={"fgf"} placeholder="Enter name" />
                         </div>
                         <div className="">
                             <Label>Driver Contact Number</Label>
-                            <InputBox onChange={(e) => { }} value={""} placeholder="Enter Mobile" />
+                            <InputBox onChange={() => { }} value={""} placeholder="Enter Mobile" />
                         </div>
                         <div className="">
                             <Label>Car NO</Label>
-                            <InputBox onChange={(e) => { }} value={""} placeholder="XX-XX-X-XXXX" />
+                            <InputBox onChange={() => { }} value={""} placeholder="XX-XX-X-XXXX" />
                         </div>
                     </div>
                     <Button className="mt-10">Confirm Booking</Button>

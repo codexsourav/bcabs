@@ -1,8 +1,8 @@
 import { Route } from "react-router-dom"
-import OneWayBooking from "../pages/error/booking/OneWayBooking"
-import RoundTripBooking from "../pages/error/booking/RoundTripBooking"
-import LocalBooking from "../pages/error/booking/LocalBooking"
-import AirportBooking from "../pages/error/booking/AirportBooking"
+import OneWayBooking from "../pages/booking/OneWayBooking"
+import RoundTripBooking from "../pages/booking/RoundTripBooking"
+import LocalBooking from "../pages/booking/LocalBooking"
+import AirportBooking from "../pages/booking/AirportBooking"
 
 function BookingRoutes() {
     return (

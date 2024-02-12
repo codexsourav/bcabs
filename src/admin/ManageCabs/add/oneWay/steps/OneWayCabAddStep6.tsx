@@ -9,7 +9,6 @@ import { IOneWayPricingKey } from "../../../../../interface/cabs/distancePricing
 import { addNewOneWayPricing, removeOneWayPricing, setNewOneWayPricing } from "../../../../../store/provider/addCabs/pricing/oneWayPricingProvider";
 import { useEffect } from "react";
 import { setNewOneWayCabData } from "../../../../../store/provider/addCabs/AddOneWayCabProvider";
-import SaveOneWaydata from "../SaveOneWaydata";
 
 function OneWayCabAddStep6() {
     const data = useSelector((state: RootState) => state.onewaypricing);

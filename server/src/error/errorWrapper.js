@@ -24,8 +24,8 @@ export function errorHandler(err, req, res, next) {
     res.status(statusCode.INTERNAL_SERVER_ERROR).json(
         {
             status: statusCode.INTERNAL_SERVER_ERROR,
-            error: err.message || 'An error occurred!',
-            message: statusMessage[500]
+            message: err.message || 'An error occurred!',
+            error: statusMessage[500]
         }
     );
 }

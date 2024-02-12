@@ -11,6 +11,11 @@ import AddRoundTripCabProvider from './provider/addCabs/AddRoundTripCabProvider'
 import oneWayPricingProvider from './provider/addCabs/pricing/oneWayPricingProvider'
 import roundTripPricingProvider from './provider/addCabs/pricing/roundTripPricingProvider'
 import imagesProvider from './provider/images/imagesProvider'
+import OneWayBookingProvider from './provider/booking/OneWayBookingProvider'
+import roundTripBookingProvider from './provider/booking/roundTripBookingProvider'
+import localBookingProvider from './provider/booking/localBookingProvider'
+import airportBookingProvider from './provider/booking/airportBookingProvider'
+
 
 
 export const store = configureStore({
@@ -27,8 +32,12 @@ export const store = configureStore({
         onewaypricing: oneWayPricingProvider,
         roundtrippricing: roundTripPricingProvider,
         imagesprovider: imagesProvider,
+        onewaybooking: OneWayBookingProvider,
+        roundtripbooking: roundTripBookingProvider,
+        localtripbooking: localBookingProvider,
+        airportbooking: airportBookingProvider,
     },
 });
 
-export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

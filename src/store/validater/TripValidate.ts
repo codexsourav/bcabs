@@ -4,6 +4,7 @@ import { ILocalProvider } from "../provider/trips/LocalProvider";
 import { IAirportProvider } from "../provider/trips/AirportProvider";
 import { IRoundTripProvider } from "../provider/trips/RoundTripProvider";
 import { areAllValuesPresent } from "../../utils/mapOptons";
+import { is_valid_drop_date } from "../../utils/helper";
 
 export const validateOneWayError = (oneway: IOneWayProvider): boolean | string => {
     if (oneway.from.trim().length == 0) {
@@ -22,7 +23,7 @@ export const validateOneWayError = (oneway: IOneWayProvider): boolean | string =
         toast.error("Select Pickup Time");
         return false;
     }
-    return `/explore/oneway?from=${oneway.from}&to=${oneway.to}&date=${oneway.date}&time=${oneway.time}`;
+    return `/explore/oneway?type=oneway&from=${oneway.from}&to=${oneway.to}&date=${oneway.date}&time=${oneway.time}`;
 }
 
 export const validateLocalError = (local: ILocalProvider): boolean | string => {
@@ -38,31 +39,39 @@ export const validateLocalError = (local: ILocalProvider): boolean | string => {
         toast.error("Select Pickup Time");
         return false;
     }
-    return `/explore/local?from=${local.from}&date=${local.date}&time=${local.time}`;
+    return `/explore/local?type=local&from=${local.from}&date=${local.date}&time=${local.time}`;
 }
 
-export const validateRoundTripError = (airport: IRoundTripProvider): boolean | string => {
-    if (airport.from.trim().length == 0) {
+export const validateRoundTripError = (roundtrip: IRoundTripProvider): boolean | string => {
+    if (roundtrip.from.trim().length == 0) {
         toast.error("Select From Location");
         return false;
     }
-    if (airport.to[0].trim().length == 0) {
+    if (roundtrip.to[0].trim().length == 0) {
         toast.error("Select To Location");
         return false;
     }
-    if (!areAllValuesPresent(airport.to)) {
+    if (!areAllValuesPresent(roundtrip.to)) {
         toast.error("Please Add All To Locations");
         return false;
     }
-    if (airport.date.trim().length == 0) {
+    if (roundtrip.date.trim().length == 0) {
         toast.error("Select Pickup Date");
         return false;
     }
-    if (airport.time.trim().length == 0) {
+    if (roundtrip.returnDate.trim().length == 0) {
+        toast.error("Select Return Date");
+        return false;
+    }
+    if (is_valid_drop_date(roundtrip.date.trim(), roundtrip.returnDate.trim())) {
+        toast.error("Return Date is Invalid");
+        return false;
+    }
+    if (roundtrip.time.trim().length == 0) {
         toast.error("Select Pickup Time");
         return false;
     }
-    return `/explore/roundtrip?from=${airport.from}&to=${airport.to.length == 1 ? airport.to[0] : airport.to.join("||")}&date=${airport.date}&time=${airport.time}`;
+    return `/explore/roundtrip?type=roundtrip&from=${roundtrip.from}&to=${roundtrip.to.length == 1 ? roundtrip.to[0] : roundtrip.to.join("||")}&date=${roundtrip.date}&return=${roundtrip.returnDate}&time=${roundtrip.time}`;
 }
 
 
@@ -88,6 +97,6 @@ export const validateAirportError = (airport: IAirportProvider): boolean | strin
         toast.error("Select Pickup Time");
         return false;
     }
-    return `/explore/airport?trip=${airport.type}&airport=${airport.airport}&location=${airport.location}&date=${airport.date}&time=${airport.time}`;
+    return `/explore/airport?type=airport&trip=${airport.type}&airport=${airport.airport}&location=${airport.location}&date=${airport.date}&time=${airport.time}`;
 }
 

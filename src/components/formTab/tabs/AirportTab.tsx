@@ -5,6 +5,9 @@ import { AppDispatch, RootState } from "../../../store/stote";
 import { IAirportProvider, setAirportData } from "../../../store/provider/trips/AirportProvider";
 import { Label } from "../../Cabs/CabBox";
 
+export function airportType(type: number) {
+    return type == 0 ? "Drop Me Airport" : "Pick to Airport"
+}
 
 function AirportTab() {
     const data = useSelector((state: RootState) => state.airport);
