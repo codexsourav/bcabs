@@ -9,11 +9,10 @@ import { IOneWayBooking } from "../../../interface/booking/Booking";
 import { validateBookingPaymentFields } from "../../../helper/validate/oneWayBookingValidate";
 import { useState } from "react";
 import { apiRequest } from "../../../helper/apiRequest";
-import { applyDiscount } from "../../../utils/helper";
-
+import { useNavigate } from "react-router-dom";
 
 function OneWayPayment({ onBack }: { onBack: () => void }) {
-    const [LoadData, setLoadData] = useState<boolean>(false)
+    const [loadData, setLoadData] = useState<boolean>(false)
     const stateData = useSelector((data: RootState) => data.onewaybooking);
     const dispatch = useDispatch();
 
@@ -30,17 +29,17 @@ function OneWayPayment({ onBack }: { onBack: () => void }) {
     }
 
     const onSubmit = async () => {
-
         if (validateBookingPaymentFields(stateData)) {
-            setLoadData(true)
-            const request = await apiRequest<any>({ "method": "POST", "path": "/api/pay/oneway", data: { amount: stateData.paymentInfo.payAmount, phone: stateData.mobile, name: stateData.name, booking: stateData } })
-            console.log(request.data);
-
-            setLoadData(false)
+            try {
+                setLoadData(true)
+                const request = await apiRequest<any>({ "method": "POST", "path": "/api/pay/oneway", data: { amount: stateData.paymentInfo.payAmount, phone: stateData.mobile, name: stateData.name, booking: stateData } })
+                console.log(request.data);
+                window.location.replace(request.data);
+            } catch (error) {
+                setLoadData(false)
+            }
         }
-
     }
-
 
     return (
         <PaymentWrapper setPayment={setPayment} parcent={stateData.paymentInfo.payPercent} price={stateData.paymentInfo.total} setParcent={(e: number) => setPayment("payPercent", e)} onBack={onBack} >
@@ -51,17 +50,15 @@ function OneWayPayment({ onBack }: { onBack: () => void }) {
                         <Label>Company Name</Label>
                         <InputBox value={stateData.gstInfo.companyName} onChange={(e) => setGstData("companyName", e)} />
                     </div>
-
                     <div className="">
                         <Label>Registration No.</Label>
                         <InputBox value={stateData.gstInfo.gstNumber} onChange={(e) => setGstData("gstNumber", e)} />
                     </div>
                 </div> : null
             }
-            <Button onClick={onSubmit} variant="primary" className="md:col-span-2 mt-7 uppercase">Proceed</Button>
-
+            <Button disabled={loadData} onClick={onSubmit} variant="primary" className="md:col-span-2 mt-7 uppercase">{!loadData ? "Proceed" : "Loading..."}</Button>
         </PaymentWrapper>
     )
 }
-export default OneWayPayment
 
+export default OneWayPayment;

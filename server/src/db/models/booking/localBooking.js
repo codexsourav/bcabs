@@ -55,7 +55,7 @@ export const LocalBookingSchema = new Schema({
 
 // Create and export the model
 export const LocalBookingModel = mongoose.model('LocalBooking', LocalBookingSchema);
-const TmpLocalBookingModel = mongoose.model('TmpLocalBooking', LocalBookingSchema);
+export const TmpLocalBookingModel = mongoose.model('TmpLocalBooking', LocalBookingSchema);
 
 export const createLocalTmpBooking = async (data) => {
     try {

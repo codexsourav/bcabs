@@ -3,7 +3,10 @@ import crypto from "crypto";
 import axios from "axios";
 import { createTmpOrder, validateBookingData } from "../helper/bookingId";
 import { statusCode } from "../utils/statusKeys";
-import { TmpOneWayBookingModel } from "../db/models/booking/onewayBooking";
+import { OneWayBookingModel, TmpOneWayBookingModel } from "../db/models/booking/onewayBooking";
+import { LocalBookingModel, TmpLocalBookingModel } from "../db/models/booking/localBooking";
+import { AirportBookingModel, TmpAirportBookingModel } from "../db/models/booking/airportBooking";
+import { RoundTripBookingModel, TmpRoundTripBookingModel } from "../db/models/booking/roundTripBooking";
 
 const merchantIdKey = 'PGTESTPAYUAT';
 const soltKey = '099eb0cd-02cf-4e2a-8aca-3e6c6aff0399';
@@ -26,9 +29,9 @@ export const newPayment = async (req, res) => {
             "orderId": order._id,
             "name": name,
             "amount": +`${amount}00`,
-            "redirectUrl": redirectUrl + merchantTransactionId,
+            "redirectUrl": `${redirectUrl}${type}/${merchantTransactionId}`,
             "redirectMode": "REDIRECT",
-            "callbackUrl": redirectUrl + merchantTransactionId,
+            "callbackUrl": `${redirectUrl}${type}/${merchantTransactionId}`,
             "mobileNumber": phone,
             "paymentInstrument": {
                 "type": "PAY_PAGE"
@@ -42,6 +45,7 @@ export const newPayment = async (req, res) => {
         const sha256 = crypto.createHash('sha256').update(string).digest('hex');
         const checksum = sha256 + '###' + keyIndex;
         const prod_URL = "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay";
+
         const options = {
             method: 'POST',
             url: prod_URL,
@@ -55,13 +59,13 @@ export const newPayment = async (req, res) => {
             }
         };
 
-
         axios.request(options).then(function (response) {
-            return res.send(response.data.data.instrumentResponse.redirectInfo.url)
+            return res.send(response.data.data.instrumentResponse.redirectInfo.url);
         }).catch(function (error) {
             console.log(error.response.data);
-            res.send(error.response.data);
+            res.status(500).send(error.response.data);
         });
+
     } else {
         res.status(statusCode.BAD_REQUEST).send({
             message: validate,
@@ -71,6 +75,8 @@ export const newPayment = async (req, res) => {
 
 export const checkStatus = async (req, res) => {
     const merchantTransactionId = req.params['txnId'];
+    const type = req.params['type'];
+
     if (!merchantTransactionId) {
         return res.status(400).send({ success: false, message: "Missing Transaction ID" });
     }
@@ -91,15 +97,19 @@ export const checkStatus = async (req, res) => {
             'X-MERCHANT-ID': `${merchantId}`
         }
     };
+
     // CHECK PAYMENT STATUS
     try {
         const response = await axios.request(options);
+
         if (response.data.success === true) {
             console.log(response.data)
-            return res.status(200).send({ success: true, message: "Payment Success" });
+            await completeOrder(type, merchantTransactionId, response.data.data)
+            return res.status(200).send({ success: true, message: "Payment Success", data: response.data });
         } else {
             return res.status(400).send({ success: false, message: "Payment Failure" });
         }
+
     } catch (err) {
         console.error(err);
         res.status(500).send({ success: false, message: err.message });
@@ -107,23 +117,50 @@ export const checkStatus = async (req, res) => {
 };
 
 
-const completeOrder = async (type, bookingId) => {
+const completeOrder = async (type, bookingId, paymentInfo) => {
     try {
-
+        const order = await getBooking(type, bookingId);
+        if (order) {
+            // @ts-ignore
+            return await saveBooking(type, { ...order._doc, translation: paymentInfo });
+        } else {
+            throw new Error("No Order Found");
+        }
     } catch (error) {
-
+        throw error;
     }
 }
 
-
-
-const getBooking = async (type, bookingId) => {
+export const getBooking = async (type, bookingId) => {
     switch (type) {
         case "oneway":
-            return await TmpOneWayBookingModel.findByIdAndDelete({ bookingId });
-        case "":
-            return await TmpOneWayBookingModel.findByIdAndDelete({ bookingId })
+            return await TmpOneWayBookingModel.findOneAndDelete({ bookingId });
+        case "local":
+            return await TmpLocalBookingModel.findOneAndDelete({ bookingId });
+        case "roundtrip":
+            return await TmpAirportBookingModel.findOneAndDelete({ bookingId });
+        case "roundtrip":
+            return await TmpRoundTripBookingModel.findOneAndDelete({ bookingId });
         default:
-            break;
+            throw new Error("Invalid Trip Type");
+    }
+}
+
+export const saveBooking = async (type, booking) => {
+    switch (type) {
+        case "oneway":
+            const newOneWayOrder = new OneWayBookingModel(booking);
+            return newOneWayOrder.save();
+        case "local":
+            const newLocalOrder = new LocalBookingModel(booking);
+            return newLocalOrder.save();
+        case "roundtrip":
+            const newAirportOrder = new AirportBookingModel(booking);
+            return newAirportOrder.save();
+        case "roundtrip":
+            const newRoundTripOrder = new RoundTripBookingModel(booking);
+            return newRoundTripOrder.save();
+        default:
+            throw new Error("Invalid Trip Type");
     }
 }

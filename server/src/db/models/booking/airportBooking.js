@@ -58,7 +58,7 @@ export const AirportBookingSchema = new Schema({
 
 // Create and export the model
 export const AirportBookingModel = mongoose.model('AirportBooking', AirportBookingSchema);
-const TmpAirportBookingModel = mongoose.model('TmpAirportBooking', AirportBookingSchema);
+export const TmpAirportBookingModel = mongoose.model('TmpAirportBooking', AirportBookingSchema);
 
 export const createAirportTmpBooking = async (data) => {
     try {

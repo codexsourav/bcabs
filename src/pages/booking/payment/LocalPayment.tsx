@@ -7,12 +7,14 @@ import { RootState } from "../../../store/stote";
 import { ILocalBooking } from "../../../interface/booking/Booking";
 import { setGstInfoLocalBooking, setLocalBooking, setPaymentLocalBooking } from "../../../store/provider/booking/localBookingProvider";
 import { validateBookingPaymentFields } from "../../../helper/validate/oneWayBookingValidate";
+import { useState } from "react";
+import { apiRequest } from "../../../helper/apiRequest";
 
 
 function LocalPayment({ onBack }: { onBack: (() => void) }) {
     const stateData = useSelector((data: RootState) => data.localtripbooking);
     const dispatch = useDispatch();
-
+    const [loadData, setLoadData] = useState<boolean>(false)
     const setPayment = (name: keyof ILocalBooking["paymentInfo"], value: any) => {
         dispatch(setPaymentLocalBooking({ name, value }))
     }
@@ -25,11 +27,16 @@ function LocalPayment({ onBack }: { onBack: (() => void) }) {
         dispatch(setGstInfoLocalBooking({ name, value }))
     }
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
         if (validateBookingPaymentFields(stateData)) {
-            console.log(stateData);
-
-            // redirect To Payment
+            try {
+                setLoadData(true)
+                const request = await apiRequest<any>({ "method": "POST", "path": "/api/pay/local", data: { amount: stateData.paymentInfo.payAmount, phone: stateData.mobile, name: stateData.name, booking: stateData } })
+                console.log(request.data);
+                window.location.replace(request.data);
+            } catch (error) {
+                setLoadData(false)
+            }
         }
     }
 
@@ -49,8 +56,7 @@ function LocalPayment({ onBack }: { onBack: (() => void) }) {
                     </div>
                 </div> : null
             }
-            <Button onClick={onSubmit} variant="primary" className="md:col-span-2 mt-7 uppercase">Proceed</Button>
-
+            <Button disabled={loadData} onClick={onSubmit} variant="primary" className="md:col-span-2 mt-7 uppercase">{!loadData ? "Proceed" : "Loading..."}</Button>
         </PaymentWrapper>
     )
 }

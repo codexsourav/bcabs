@@ -58,7 +58,7 @@ export const RoundTripBookingSchema = new Schema({
 
 // Create and export the model
 export const RoundTripBookingModel = mongoose.model('RoundTripBooking', RoundTripBookingSchema);
-const TmpRoundTripBookingModel = mongoose.model('TmpRoundTripBooking', RoundTripBookingSchema);
+export const TmpRoundTripBookingModel = mongoose.model('TmpRoundTripBooking', RoundTripBookingSchema);
 
 export const createRoundTripTmpBooking = async (data) => {
     try {

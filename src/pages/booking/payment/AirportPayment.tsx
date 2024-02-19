@@ -7,11 +7,15 @@ import { RootState } from "../../../store/stote";
 import { IAirportBooking } from "../../../interface/booking/Booking";
 import { setAirportBooking, setGstInfoAirportBooking, setPaymentAirportBooking } from "../../../store/provider/booking/airportBookingProvider";
 import { validateBookingPaymentFields } from "../../../helper/validate/oneWayBookingValidate";
+import { apiRequest } from "../../../helper/apiRequest";
+import { useState } from "react";
+
 
 
 function AirportPayment({ onBack }: { onBack: (() => void) }) {
     const stateData = useSelector((data: RootState) => data.airportbooking);
     const dispatch = useDispatch();
+    const [loadData, setLoadData] = useState<boolean>(false)
 
     const setPayment = (name: keyof IAirportBooking["paymentInfo"], value: any) => {
         dispatch(setPaymentAirportBooking({ name, value }))
@@ -25,11 +29,16 @@ function AirportPayment({ onBack }: { onBack: (() => void) }) {
         dispatch(setGstInfoAirportBooking({ name, value }))
     }
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
         if (validateBookingPaymentFields(stateData)) {
-            console.log(stateData);
-
-            // redirect To Payment
+            try {
+                setLoadData(true)
+                const request = await apiRequest<any>({ "method": "POST", "path": "/api/pay/airport", data: { amount: stateData.paymentInfo.payAmount, phone: stateData.mobile, name: stateData.name, booking: stateData } })
+                console.log(request.data);
+                window.location.replace(request.data);
+            } catch (error) {
+                setLoadData(false)
+            }
         }
     }
 
@@ -50,7 +59,7 @@ function AirportPayment({ onBack }: { onBack: (() => void) }) {
                     </div>
                 </div> : null
             }
-            <Button onClick={onSubmit} variant="primary" className="md:col-span-2 mt-7 uppercase">Proceed</Button>
+            <Button disabled={loadData} onClick={onSubmit} variant="primary" className="md:col-span-2 mt-7 uppercase">{!loadData ? "Proceed" : "Loading..."}</Button>
 
         </PaymentWrapper>
     )
