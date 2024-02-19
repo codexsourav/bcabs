@@ -30,12 +30,11 @@ function RoundTripPayment({ onBack }: { onBack: (() => void) }) {
         if (validateBookingPaymentFields(stateData)) {
             console.log(stateData);
 
-            // redirect To Payment
         }
     }
 
     return (
-        <PaymentWrapper parcent={stateData.paymentInfo.payPercent} price={stateData.paymentInfo.total} setParcent={(e: number) => setPayment("payPercent", e)} onBack={onBack} >
+        <PaymentWrapper setPayment={setPayment} parcent={stateData.paymentInfo.payPercent} price={stateData.paymentInfo.total} setParcent={(e: number) => setPayment("payPercent", e)} onBack={onBack} >
             <div className="flex justify-start col-span-2 mb-2 mt-3  items-center gap-2 font-semibold" ><input checked={stateData.haveGst} onChange={() => setStateData("haveGst", !stateData.haveGst)} type="checkbox" className="font-xl select-none text-gray-900" id="ckeck" /> <label htmlFor="ckeck" className="select-none" >I have a GST Number <span className="text-gray-600">(Optional)</span></label></div>
             {
                 stateData.haveGst ? <div className="col-span-2 w-full grid grid-cols-2 gap-4">

@@ -1,1 +1,1 @@
-export const hostUrl = "https://babagcabs.com";
+export const hostUrl = "http://localhost:8002";

@@ -2,9 +2,6 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { IOneWayBooking } from '../../../interface/booking/Booking';
 
 const initialState: IOneWayBooking = {
-    _id: '',
-    _date: '',
-    _v: '',
     trip: 'oneway',
     status: 'pending',
     cabId: '',
@@ -48,6 +45,7 @@ const initialState: IOneWayBooking = {
         pickUpTime: '',
         distance: 0,
     },
+
     pickupInfo: {
         pickupAddress: '',
         pickupLandmark: '',
