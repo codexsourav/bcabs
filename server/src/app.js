@@ -19,7 +19,7 @@ import exploreRoutes from "./routes/client/explore/exploreRoutes";
 import authRotes from "./routes/client/auth/authRotes";
 import cors from 'cors';
 import uploader from "./utils/uploader";
-export const port = 8002;
+export const port = 3000;
 const staticFolderPath = path.join(new URL('.', import.meta.url).pathname, '..', 'static');
 
 const app = express();
