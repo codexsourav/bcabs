@@ -8,12 +8,14 @@ import { RootState } from "../../../store/stote";
 import { IRoundTripBooking } from "../../../interface/booking/Booking";
 import { validateBookingPaymentFields } from "../../../helper/validate/oneWayBookingValidate";
 import { setGstInfoRoundTripBooking, setPaymentRoundTripBooking, setRoundTripBooking } from "../../../store/provider/booking/roundTripBookingProvider";
+import { apiRequest } from "../../../helper/apiRequest";
+import { useState } from "react";
 
 
 function RoundTripPayment({ onBack }: { onBack: (() => void) }) {
     const stateData = useSelector((data: RootState) => data.roundtripbooking);
     const dispatch = useDispatch();
-
+    const [loadData, setLoadData] = useState<boolean>(false)
     const setPayment = (name: keyof IRoundTripBooking["paymentInfo"], value: any) => {
         dispatch(setPaymentRoundTripBooking({ name, value }))
     }
@@ -26,16 +28,21 @@ function RoundTripPayment({ onBack }: { onBack: (() => void) }) {
         dispatch(setGstInfoRoundTripBooking({ name, value }))
     }
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
         if (validateBookingPaymentFields(stateData)) {
-            console.log(stateData);
-
-            // redirect To Payment
+            try {
+                setLoadData(true)
+                const request = await apiRequest<any>({ "method": "POST", "path": "/api/pay/roundtrip", data: { amount: stateData.paymentInfo.payAmount, phone: stateData.mobile, name: stateData.name, booking: stateData } })
+                console.log(request.data);
+                window.location.replace(request.data);
+            } catch (error) {
+                setLoadData(false)
+            }
         }
     }
 
     return (
-        <PaymentWrapper parcent={stateData.paymentInfo.payPercent} price={stateData.paymentInfo.total} setParcent={(e: number) => setPayment("payPercent", e)} onBack={onBack} >
+        <PaymentWrapper setPayment={setPayment} parcent={stateData.paymentInfo.payPercent} price={stateData.paymentInfo.total} setParcent={(e: number) => setPayment("payPercent", e)} onBack={onBack} >
             <div className="flex justify-start col-span-2 mb-2 mt-3  items-center gap-2 font-semibold" ><input checked={stateData.haveGst} onChange={() => setStateData("haveGst", !stateData.haveGst)} type="checkbox" className="font-xl select-none text-gray-900" id="ckeck" /> <label htmlFor="ckeck" className="select-none" >I have a GST Number <span className="text-gray-600">(Optional)</span></label></div>
             {
                 stateData.haveGst ? <div className="col-span-2 w-full grid grid-cols-2 gap-4">
@@ -50,7 +57,7 @@ function RoundTripPayment({ onBack }: { onBack: (() => void) }) {
                     </div>
                 </div> : null
             }
-            <Button onClick={onSubmit} variant="primary" className="md:col-span-2 mt-7 uppercase">Proceed</Button>
+            <Button disabled={loadData} onClick={onSubmit} variant="primary" className="md:col-span-2 mt-7 uppercase">{!loadData ? "Proceed" : "Loading..."}</Button>
 
         </PaymentWrapper>
     )

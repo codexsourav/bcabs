@@ -2,9 +2,6 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { IAirportBooking } from '../../../interface/booking/Booking';
 
 const initialState: IAirportBooking = {
-    _id: '',
-    _date: '',
-    _v: '',
     trip: 'airport',
     status: 'pending',
     cabId: '',

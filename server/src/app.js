@@ -13,13 +13,19 @@ import manageRoundTripCabRoutes from "./routes/admin/manageCabs/manageRoundTripC
 import oneWayPricingRoutes from "./routes/admin/pricing/oneWayPricingRoutes";
 import roundTripPricingRoutes from "./routes/admin/pricing/roundTripPricingRoutes";
 import getCabsRoutes from "./routes/admin/cabs/getCabsRoutes";
+import payRoutes from "./payment/payRoutes";
+
 import manageBlogsRoutes from "./routes/admin/blogs/manageBlogsRoutes";
 
 import exploreRoutes from "./routes/client/explore/exploreRoutes";
 import authRotes from "./routes/client/auth/authRotes";
 import cors from 'cors';
 import uploader from "./utils/uploader";
+<<<<<<< HEAD
 export const port = 3000;
+=======
+const port = 8002;
+>>>>>>> 4160f4d822b038f5a1e01147691cd212f51f7284
 const staticFolderPath = path.join(new URL('.', import.meta.url).pathname, '..', 'static');
 
 const app = express();
@@ -40,6 +46,7 @@ app.use(
     exploreRoutes,
     authRotes,
     manageBlogsRoutes,
+    payRoutes,
 );
 
 // Route handler

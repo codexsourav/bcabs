@@ -2,9 +2,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { IRoundTripBooking } from '../../../interface/booking/Booking';
 
 const initialState: IRoundTripBooking = {
-    _id: '',
-    _date: '',
-    _v: '',
+
     trip: 'roundtrip',
     status: 'pending',
     cabId: '',

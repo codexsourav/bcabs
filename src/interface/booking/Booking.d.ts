@@ -4,6 +4,7 @@ export interface booking {
     _id?: string;
     _date?: string;
     _v?: string;
+    bookingId?: string;
     trip: "oneway" | "local" | "roundtrip" | "airport";
     status: "pending" | "confirmed" | "complete" | "current" | "cancel";
     cabId: string;
@@ -29,7 +30,8 @@ export interface booking {
         payAmount: number;
         pendingAmount: number;
         total: number;
-    }
+    },
+    translation?: any
 }
 
 export interface IOneWayBooking extends booking {

@@ -3,9 +3,7 @@ import { ILocalBooking } from '../../../interface/booking/Booking';
 
 
 const initialState: ILocalBooking = {
-    _id: '',
-    _date: '',
-    _v: '',
+
     trip: 'local',
     status: 'pending',
     cabId: '',
