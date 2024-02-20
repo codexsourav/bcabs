@@ -25,7 +25,7 @@ export interface ApiResponse {
     message?: string;
 }
 
-export const baseUrl = "http://babagcabs.com";
+export const baseUrl = "http://localhost:8002";
 export const apiRequest = async <RES>({ method = "GET", path, data, isAdmin = false }: { isAdmin?: boolean; path: string, method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", data?: any }) => {
     try {
         const config: AxiosRequestConfig<any> = {
@@ -108,6 +108,7 @@ export const withErrorHandling = (callback: () => Promise<void>, errorCallback?:
         }
     }
 };
+
 const getAccessToken = (admin: boolean) => {
     return getLocalStorageData(admin ? StorageKEY.admin : StorageKEY.user) || "";
 };

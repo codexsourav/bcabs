@@ -11,6 +11,8 @@ import { RoundTripBookingModel, TmpRoundTripBookingModel } from "../db/models/bo
 const merchantIdKey = 'PGTESTPAYUAT';
 const soltKey = '099eb0cd-02cf-4e2a-8aca-3e6c6aff0399';
 const redirectUrl = "http://localhost:8002/api/paystatus/"
+const errorRedirectUrl = "http://localhost:5173"
+
 
 
 export const newPayment = async (req, res) => {
@@ -101,15 +103,15 @@ export const checkStatus = async (req, res) => {
     // CHECK PAYMENT STATUS
     try {
         const response = await axios.request(options);
-
         if (response.data.success === true) {
-            console.log(response.data)
+            console.log(response.data);
             await completeOrder(type, merchantTransactionId, response.data.data)
-            return res.status(200).send({ success: true, message: "Payment Success", data: response.data });
+            // return res.status(200).send({ success: true, message: "Payment Success", data: response.data });
+            res.redirect(`${errorRedirectUrl}/booking/payment/${type}/${merchantTransactionId}`);
         } else {
-            return res.status(400).send({ success: false, message: "Payment Failure" });
+            // return res.status(400).send({ success: false, message: "Payment Failure" });
+            res.redirect(`${errorRedirectUrl}/booking/payment/error/${type}/${merchantTransactionId}`);
         }
-
     } catch (err) {
         console.error(err);
         res.status(500).send({ success: false, message: err.message });
